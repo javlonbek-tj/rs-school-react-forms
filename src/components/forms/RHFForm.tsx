@@ -1,5 +1,6 @@
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { createFormSchema } from '../../schemas/formSchema';
 import { useFormStore } from '../../store/formStore';
 import { imageToBase64 } from '../../utils/imageUtils';
@@ -27,17 +28,7 @@ export function RHFForm({ onClose }: RHFFormProps) {
 
   const password = useWatch({ control, name: 'password' }) ?? '';
 
-  const onSubmit = async (data: {
-    name: string;
-    age: number;
-    email: string;
-    gender: 'male' | 'female';
-    password: string;
-    confirmPassword: string;
-    country: string;
-    image: File;
-    termsAccepted: true;
-  }) => {
+  const onSubmit = async (data: z.infer<typeof schema>) => {
     const { image, confirmPassword: _c, ...rest } = data;
     const imageBase64 =
       image instanceof File ? await imageToBase64(image) : null;
